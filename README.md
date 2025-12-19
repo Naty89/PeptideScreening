@@ -1,6 +1,6 @@
 # Cyclic Peptide Design and Screening Pipeline
 
-Automated end-to-end pipeline for designing and screening cyclic peptides that bind to protein pockets using pocket detection, AI-driven design, and hydrogen bond analysis.
+Automated end-to-end pipeline for designing and screening cyclic peptides that bind to protein pockets using pocket detection and hydrogen bond analysis.
 
 ## Overview
 
@@ -15,21 +15,11 @@ This pipeline takes a protein structure (CIF file) and automatically:
 ```
 Protein CIF → fpocket → BoltzGen → Chain Extraction → H-bond Analysis → Filtering → Results
 ```
-
-## Features
-
-- ✅ Fully automated from CIF input to filtered results
-- ✅ Parallel processing for maximum efficiency
-- ✅ Automatic SLURM job submission and monitoring
-- ✅ Quality filtering based on hydrogen bond stability (N/3 criterion)
-- ✅ Sorted output by structural quality
-- ✅ Both isolated peptides and full complexes provided
-
 ## Requirements
 
 ### Software Dependencies
 
-You need 4 conda environments:
+Used 4 conda environments:
 
 - **fpocket_env** - Pocket detection (fpocket 4.2.2)
 - **boltz_env** - Cyclic peptide design (BoltzGen + PyTorch + CUDA)
@@ -71,41 +61,9 @@ The pipeline uses SLURM for GPU job submission. Update these settings in `master
 #SBATCH --account=your-account     # Your SLURM account
 #SBATCH --mail-user=your@email.com # Your email
 ```
-
-## Installation
-
-**See [INSTALL.md](INSTALL.md) for complete installation instructions.**
-
-**Quick Start:**
-
-```bash
-# 1. Clone repository
-git clone git@github.com:Naty89/PeptideScreening.git
-cd PeptideScreening
-
-# 2. Install environments (choose one method)
-
-# Method A: From YAML files (recommended)
-conda env create -f environments/fpocket_env.yml
-conda env create -f environments/boltz_env.yml
-conda env create -f environments/SE3nv.yml
-conda env create -f environments/rosetta_env.yml
-
-# Method B: Manual installation
-# See INSTALL.md for manual installation commands
-
-# 3. Verify installation
-./verify_install.sh
-
-# 4. Configure SLURM settings
-nano master_pipeline.sh  # Edit lines 7-12 for your cluster
-```
-
-**Troubleshooting:** See [INSTALL.md](INSTALL.md) for detailed help.
-
 ## Usage
 
-### Option 1: Full Pipeline (Recommended)
+### Option 1: Full Pipeline
 
 Run the complete pipeline from a protein CIF file:
 
@@ -134,8 +92,6 @@ Run the complete pipeline from a protein CIF file:
 8. Combines and sorts results by quality
 9. Collects final structures
 
-**Duration:** 6-48 hours (mostly GPU time for BoltzGen)
-
 ---
 
 ### Option 2: Post-Processing Only
@@ -157,9 +113,6 @@ If you already have BoltzGen output, run only the analysis steps:
 4. Collects filtered structures
 5. Combines and sorts scores
 6. Outputs final results
-
-**Duration:** 10-30 minutes
-
 ---
 
 ## Output Structure
@@ -184,7 +137,7 @@ PeptideScreening/
 │   ├── alpha_0.2/
 │   ├── alpha_0.3/
 │   ├── alpha_0.4/
-│   └── combined_filtered_scores.sc  # ⭐ Main results file
+│   └── combined_filtered_scores.sc  #  Main results file
 │
 ├── cyclic_designs/               # Original BoltzGen output
 │   └── alpha_*/intermediate_designs/
@@ -192,25 +145,6 @@ PeptideScreening/
 └── logs/                         # SLURM job logs
 ```
 
-## Key Output Files
-
-### 📄 `chainA_outputs/combined_filtered_scores.sc`
-
-**Main results file** - All filtered structures sorted by H-bond count (ascending).
-
-**Format:**
-```
-alpha_folder    structure_name                      min_internal_hbonds
-alpha_0.01      structure_6_chainA.cif             4.000
-alpha_0.1       structure_6_chainA.cif             4.000
-...
-alpha_0.4       structure_2_chainA.cif             8.000  ← Best candidate
-```
-
-**How to use:**
-- Lower H-bond counts = Less stable
-- Higher H-bond counts = More stable
-- **Bottom of file = Best candidates** (highest stability)
 
 ### 📁 `filterChainA/`
 
@@ -275,43 +209,6 @@ Complete protein-peptide complexes that passed filtering.
 - Too few H-bonds → unstable, likely to unfold
 - This criterion balances stability with flexibility
 
-**Example:**
-```
-Peptide with 18 residues:
-  Threshold = 18 / 3 = 6 H-bonds
-
-  Structure A: 4 H-bonds → REJECTED (unstable)
-  Structure B: 7 H-bonds → ACCEPTED (stable)
-  Structure C: 9 H-bonds → ACCEPTED (very stable)
-```
-
-## Interpreting Results
-
-### View Top Candidates
-
-```bash
-# Show best designs (highest H-bond counts at bottom)
-tail -10 chainA_outputs/combined_filtered_scores.sc
-```
-
-### Count Filtered Structures
-
-```bash
-# Total structures passing filter
-ls filterChainA/*.cif | wc -l
-
-# Structures per alpha value
-for dir in chainA_outputs/alpha_*; do
-    echo "$(basename $dir): $(grep -c SCORE ${dir}/*_filtered.sc) passed"
-done
-```
-
-### Visualize Structures
-
-```bash
-# Open top structure in PyMOL
-pymol fullStructures/alpha_0.4_structure_2.cif
-```
 
 ## Individual Scripts
 
