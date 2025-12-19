@@ -29,33 +29,36 @@ Protein CIF → fpocket → BoltzGen → Chain Extraction → H-bond Analysis �
 
 ### Software Dependencies
 
-#### Conda Environments
-You need 4 conda environments installed:
+You need 4 conda environments:
 
-1. **fpocket_env** - Pocket detection
-   ```bash
-   conda create -n fpocket_env -c bioconda fpocket
-   ```
+- **fpocket_env** - Pocket detection (fpocket 4.2.2)
+- **boltz_env** - Cyclic peptide design (BoltzGen + PyTorch + CUDA)
+- **SE3nv** - Chain extraction (Python 3.9 + PyMOL)
+- **rosetta_env** - H-bond analysis (Rosetta 2025.47)
 
-2. **boltz_env** - Cyclic peptide design
-   ```bash
-   # Install BoltzGen according to official documentation
-   conda create -n boltz_env python=3.9
-   conda activate boltz_env
-   pip install boltzgen
-   ```
+**See [INSTALL.md](INSTALL.md) for detailed installation instructions.**
 
-3. **SE3nv** - PyMOL for chain extraction
-   ```bash
-   conda create -n SE3nv python=3.9
-   conda activate SE3nv
-   # PyMOL should be loaded as module (see below)
-   ```
+### Quick Install
 
-4. **rosetta_env** - H-bond analysis
-   ```bash
-   conda create -n rosetta_env -c conda-forge rosetta
-   ```
+```bash
+# Clone repository
+git clone git@github.com:Naty89/PeptideScreening.git
+cd PeptideScreening
+
+# Install all environments
+conda env create -f environments/fpocket_env.yml
+conda env create -f environments/boltz_env.yml
+conda env create -f environments/SE3nv.yml
+conda env create -f environments/rosetta_env.yml
+
+# Verify installation
+./verify_install.sh
+
+# Configure SLURM (edit master_pipeline.sh lines 7-12)
+nano master_pipeline.sh
+```
+
+**Full instructions:** See [INSTALL.md](INSTALL.md)
 
 #### System Modules
 - **PyMOL** - `module load pymol`
@@ -71,21 +74,34 @@ The pipeline uses SLURM for GPU job submission. Update these settings in `master
 
 ## Installation
 
-1. Clone this repository:
-   ```bash
-   git clone git@github.com:Naty89/PeptideScreening.git
-   cd PeptideScreening
-   ```
+**See [INSTALL.md](INSTALL.md) for complete installation instructions.**
 
-2. Make scripts executable:
-   ```bash
-   chmod +x *.sh
-   ```
+**Quick Start:**
 
-3. Verify all conda environments are installed:
-   ```bash
-   conda env list | grep -E "(fpocket_env|boltz_env|SE3nv|rosetta_env)"
-   ```
+```bash
+# 1. Clone repository
+git clone git@github.com:Naty89/PeptideScreening.git
+cd PeptideScreening
+
+# 2. Install environments (choose one method)
+
+# Method A: From YAML files (recommended)
+conda env create -f environments/fpocket_env.yml
+conda env create -f environments/boltz_env.yml
+conda env create -f environments/SE3nv.yml
+conda env create -f environments/rosetta_env.yml
+
+# Method B: Manual installation
+# See INSTALL.md for manual installation commands
+
+# 3. Verify installation
+./verify_install.sh
+
+# 4. Configure SLURM settings
+nano master_pipeline.sh  # Edit lines 7-12 for your cluster
+```
+
+**Troubleshooting:** See [INSTALL.md](INSTALL.md) for detailed help.
 
 ## Usage
 
