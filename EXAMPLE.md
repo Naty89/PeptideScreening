@@ -157,16 +157,47 @@ pymol fullStructures/alpha_0.4_1A85_pocket1_cyclic_2.cif
 
 ### Next Steps
 
+**Optional: Cluster Similar Structures**
+
+Reduce redundancy by clustering:
+
+```bash
+# Navigate to filtered structures
+cd filterChainA
+
+# Activate environment and install gemmi if needed
+conda activate SE3nv
+pip install gemmi
+
+# Run clustering
+python3 ../perResidueCluster.py
+
+# Output:
+# Clustering peptides with 15 residues
+# Cluster 1: Representative alpha_0.4_1A85_pocket1_cyclic_2_chainA.cif, 5 members
+# Cluster 2: Representative alpha_0.3_1A85_pocket1_cyclic_9_chainA.cif, 3 members
+# ...
+# Total number of clusters: 8
+# Cluster representatives saved to: cluster_representatives.txt
+
+# View cluster representatives (unique scaffolds)
+cat cluster_representatives.txt
+```
+
+**Use Case:** If you have 31 filtered structures, clustering might reduce this to 8-10 unique scaffolds, making experimental testing more feasible.
+
+---
+
 **Computational Validation:**
 ```bash
-# MD simulation of top candidates
+# MD simulation of top candidates (or cluster representatives)
 # Binding affinity prediction
 # Stability analysis
 ```
 
 **Experimental Validation:**
 ```bash
-# Peptide synthesis (if feasible)
+# Peptide synthesis (test cluster representatives first)
 # Binding assays
 # Structural validation
 ```

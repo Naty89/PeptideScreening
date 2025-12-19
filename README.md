@@ -411,7 +411,69 @@ which rosetta_scripts
 | `collect_filtered_files.sh` | Collects filtered Chain A structures |
 | `combine_filtered_scores.sh` | Combines and sorts all scores |
 | `collect_full_structures.sh` | Collects full complexes |
+| `perResidueCluster.py` | Optional: Cluster structures by backbone RMSD |
 | `hbond_analysis_nofail.xml` | Rosetta protocol for H-bond counting |
+
+## Optional: Structure Clustering
+
+After filtering, you may want to cluster similar structures to identify unique scaffolds.
+
+### Clustering by Backbone RMSD
+
+**Purpose:** Group similar peptide structures to reduce redundancy and identify distinct structural families.
+
+**Usage:**
+```bash
+# Navigate to filterChainA directory
+cd filterChainA
+
+# Run clustering (requires gemmi library)
+conda activate SE3nv
+pip install gemmi  # If not already installed
+
+python3 ../perResidueCluster.py
+```
+
+**What it does:**
+- Clusters structures by backbone RMSD (default: 1.5 Å cutoff)
+- Uses cookie-cutter approach (greedy clustering)
+- Groups peptides by length first, then clusters each length group
+- Outputs cluster representatives (lowest H-bond structures from each cluster)
+
+**Output files:**
+- `clusters.json` - Detailed cluster information
+- `cluster_representatives.txt` - One representative per cluster (sorted by score)
+
+**Example output:**
+```
+Clustering peptides with 15 residues
+Cluster 1: Representative alpha_0.4_structure_2_chainA.cif, 5 members, RMSD < 1.5 Å
+Cluster 2: Representative alpha_0.3_structure_9_chainA.cif, 3 members, RMSD < 1.5 Å
+...
+
+Summary by peptide length:
+  15 residues: 20 structures → 6 clusters
+  16 residues: 11 structures → 4 clusters
+```
+
+**Use cluster representatives for:**
+- Reducing redundancy before experimental testing
+- Identifying diverse structural scaffolds
+- Further computational analysis (MD, docking, etc.)
+
+**Algorithm details:**
+- Uses Kabsch algorithm for optimal superposition
+- Backbone atoms: N, CA, C, O
+- Greedy clustering: Best structure becomes cluster center
+- All structures within RMSD cutoff are added to cluster
+
+**Customize RMSD cutoff:**
+Edit `perResidueCluster.py` line 242:
+```python
+clusters = cluster_structures(coords_dict, structures_sorted, rmsd_cutoff=2.0)  # More permissive
+```
+
+---
 
 ## Example Workflow
 
