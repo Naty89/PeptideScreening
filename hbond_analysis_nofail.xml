@@ -1,0 +1,40 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+        <ScoreFunction name="ref" weights="ref2015" />
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>
+        <!-- Select residues 1 through 15 of the peptide -->
+        <Chain name="select_peptide" chains="A"/>
+    </RESIDUE_SELECTORS>
+
+    <FILTERS>
+
+        <!-- Prevent oversaturated carbonyl acceptors -->
+        <OversaturatedHbondAcceptorFilter
+            name="oversat"
+            scorefxn="ref"
+            max_allowed_oversaturated="0"
+            consider_mainchain_only="true"
+            donor_selector="select_peptide"
+            acceptor_selector="select_peptide"
+            confidence="0" />
+
+        <!-- Count internal peptide HBonds -->
+        <PeptideInternalHbondsFilter
+            name="min_internal_hbonds"
+            residue_selector="select_peptide"
+            hbond_cutoff="0"
+            confidence="0" />
+
+    </FILTERS>
+
+    <MOVERS>
+        <RunSimpleMetrics name="compute" />
+    </MOVERS>
+
+    <PROTOCOLS>
+        <Add filter="oversat"/>
+        <Add filter="min_internal_hbonds"/>
+    </PROTOCOLS>
+</ROSETTASCRIPTS>

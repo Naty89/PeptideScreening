@@ -1,0 +1,50 @@
+# Output directories
+cyclic_designs/
+chainA_outputs/
+filterChainA/
+fullStructures/
+logs/
+
+# Temporary files
+*.tmp
+*.log
+failed_cifs.log
+all_cifs.txt
+
+# fpocket output
+*_out/
+
+# YAML configs (generated during run)
+*.yaml
+
+# Input CIF files (user provides these)
+*.cif
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Conda environments
+.conda/
+
+# SLURM job files (generated)
+run_boltzgen_*.sh
+
+# Rosetta temp files
+temp_scores/
+*.sc
+
+# PyMOL session files
+*.pse
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
