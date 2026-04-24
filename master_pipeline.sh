@@ -208,7 +208,7 @@ boltzgen run YAML_PLACEHOLDER \
   --num_designs 10 \
   --filter_biased=false \
   --inverse_fold_avoid 'M' \
-  --additional_filters 'design_GLY>0.12' 'design_ALA<0.08' 'design_ALA>0.30' 'design_GLY<0.30' \
+  --additional_filters 'design_GLY>0.12' 'design_ALA>0.08' 'design_ALA<0.30' 'design_GLY<0.30' \
   --steps design inverse_folding folding design_folding analysis \
   --alpha ${ALPHA}
 
